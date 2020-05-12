@@ -16,8 +16,8 @@
     "type": "git",
     "url": "git+https://github.com/LuckyStarry/luckystarry-ui-utils.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "SUN BO <starry@vip.qq.com>",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/LuckyStarry/luckystarry-ui-utils/issues"
   },
