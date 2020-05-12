@@ -4,13 +4,16 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "prebuild": "del-cli dist -f",
+    "clean": "del-cli dist -f",
+    "lint": "tslint -p . -c tslint.json 'src/**/*.ts'",
+    "prebuild": "npm run clean && npm run lint",
     "build": "tsc",
-    "pretest": "del-cli .nyc_output coverage -f",
+    "postbuild": "npm run bundle",
+    "bundle": "browserify dist/index.js > dist/index.bundle.js",
+    "postbundle": "npm run uglify",
+    "uglify": "uglifyjs dist/index.bundle.js --compress --mangle --output dist/index.min.js",
     "test": "nyc mocha",
-    "testonly": "mocha",
-    "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "dev": "gulp dev"
+    "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "repository": {
     "type": "git",
@@ -26,6 +29,7 @@
     "@types/chai": "^4.2.11",
     "@types/mocha": "^7.0.2",
     "@types/node": "^13.13.5",
+    "browserify": "^16.5.1",
     "chai": "^4.2.0",
     "coveralls": "^3.1.0",
     "cross-env": "^7.0.2",
@@ -36,6 +40,7 @@
     "ts-node": "^8.10.1",
     "tslint": "^6.1.2",
     "tslint-config-standard": "^9.0.0",
-    "typescript": "^3.8.3"
+    "typescript": "^3.8.3",
+    "uglify-js": "^3.9.2"
   }
 }
