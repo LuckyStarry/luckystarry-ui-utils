@@ -42,5 +42,8 @@
     "tslint-config-standard": "^9.0.0",
     "typescript": "^3.8.3",
     "uglify-js": "^3.9.2"
+  },
+  "dependencies": {
+    "axios": "^0.19.2"
   }
 }

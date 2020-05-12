@@ -1,4 +1,4 @@
-import { DAY, HOUR, MINUTE, SECOND } from './time-units'
+import { DAY, HOUR, MINUTE, SECOND } from './units'
 
 export function toSmartString(time: number | Date): string {
   let timestamp = 0
