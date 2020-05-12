@@ -1,5 +1,5 @@
 export interface Response<T = any> {
-  Success: boolean
-  Message: string
-  Entity: T
+  readonly Success: boolean
+  readonly Message: string
+  readonly Entity: T
 }

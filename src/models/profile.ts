@@ -1,6 +1,6 @@
 export interface Profile {
-  UserID: string
-  UserName: string
-  UserAvatar: string
-  RoleIDs: string[]
+  readonly UserID: string
+  readonly UserName: string
+  readonly UserAvatar: string
+  readonly RoleIDs: string[]
 }
