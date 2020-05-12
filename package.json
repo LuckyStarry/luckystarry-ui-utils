@@ -9,7 +9,7 @@
     "prebuild": "npm run clean && npm run lint",
     "build": "tsc",
     "postbuild": "npm run bundle",
-    "bundle": "browserify dist/index.js > dist/index.bundle.js",
+    "bundle": "browserify dist/index.js --standalone lsui > dist/index.bundle.js",
     "postbundle": "npm run uglify",
     "uglify": "uglifyjs dist/index.bundle.js --compress --mangle --output dist/index.min.js",
     "test": "nyc mocha",
