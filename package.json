@@ -9,7 +9,7 @@
     "prebuild": "npm run clean && npm run lint",
     "build": "tsc",
     "postbuild": "npm run bundle",
-    "bundle": "browserify dist/index.js --standalone lsui > dist/index.bundle.js",
+    "bundle": "browserify --external vue --external vuex --external vue-router --external axios dist/index.js --standalone lsui > dist/index.bundle.js",
     "postbundle": "npm run uglify",
     "uglify": "uglifyjs dist/index.bundle.js --compress --mangle --output dist/index.min.js",
     "test": "nyc mocha",
@@ -30,6 +30,7 @@
     "@types/mocha": "^7.0.2",
     "@types/node": "^13.13.5",
     "browserify": "^16.5.1",
+    "browserify-shim": "^3.8.14",
     "chai": "^4.2.0",
     "coveralls": "^3.1.0",
     "cross-env": "^7.0.2",
@@ -49,5 +50,16 @@
     "vue-router": "^3.1.6",
     "vuex": "^3.4.0",
     "vuex-module-decorators": "^0.17.0"
+  },
+  "browserify": {
+    "transform": [
+      "browserify-shim"
+    ]
+  },
+  "browserify-shim": {
+    "vue": "global:Vue",
+    "vuex": "global:Vuex",
+    "vue-router": "global:VueRouter",
+    "axios": "global:axios"
   }
 }
