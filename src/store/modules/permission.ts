@@ -31,10 +31,6 @@ export interface IPermissionState {
 
 @Module
 export class Permission extends VuexModule implements IPermissionState {
-  public constructor(application: Context) {
-    super({})
-    this.application = application
-  }
   public routes: RouteConfig[] = []
   public dynamicRoutes: RouteConfig[] = []
   public application: Context

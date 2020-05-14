@@ -17,13 +17,16 @@ export class StoreBuilder {
   }
 
   public build(): Store<IRootState> {
-    let store = new Store<IRootState>({})
-    store.registerModule('app', new App(this.context))
-    store.registerModule('user', new User(this.context))
-    store.registerModule('errorLog', ErrorLog)
-    store.registerModule('permission', new Permission(this.context))
-    store.registerModule('settings', Settings)
-    store.registerModule('tagsView', TagsView)
+    let store = new Store<IRootState>({
+      modules: {
+        app: App,
+        user: User,
+        errorLog: ErrorLog,
+        permission: Permission,
+        settings: Settings,
+        tagsView: TagsView
+      }
+    })
     return store
   }
 }

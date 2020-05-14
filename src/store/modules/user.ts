@@ -13,11 +13,6 @@ export interface IUserState {
 
 @Module
 export class User extends VuexModule implements IUserState {
-  public constructor(application: Context) {
-    super({})
-    this.application = application
-  }
-
   public token = ''
   public id = ''
   public name = ''

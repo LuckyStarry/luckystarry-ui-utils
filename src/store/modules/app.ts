@@ -17,11 +17,6 @@ export interface IAppState {
 
 @Module
 export class App extends VuexModule implements IAppState {
-  public constructor(application: Context) {
-    super({})
-    this.application = application
-  }
-
   public sidebar = {
     opened: true,
     withoutAnimation: false
