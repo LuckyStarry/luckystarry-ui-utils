@@ -47,6 +47,6 @@ export class Settings extends VuexModule implements ISettingsState {
 
   @Action
   public ChangeSetting(payload: { key: string; value: any }) {
-    this.CHANGE_SETTING(payload)
+    this.context.commit('CHANGE_SETTING', payload)
   }
 }
