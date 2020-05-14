@@ -9,7 +9,7 @@
     "prebuild": "npm run clean && npm run lint",
     "build": "tsc",
     "postbuild": "npm run bundle",
-    "bundle": "browserify --external vue --external vuex --external vue-router --external axios dist/index.js --standalone lsui > dist/index.bundle.js",
+    "bundle": "browserify --external vue --external vuex --external vue-router --external axios --external js-cookie dist/index.js --standalone lsui > dist/index.bundle.js",
     "postbundle": "npm run uglify",
     "uglify": "uglifyjs dist/index.bundle.js --compress --mangle --output dist/index.min.js",
     "test": "nyc mocha",
@@ -27,6 +27,7 @@
   "homepage": "https://github.com/LuckyStarry/luckystarry-ui-utils#readme",
   "devDependencies": {
     "@types/chai": "^4.2.11",
+    "@types/js-cookie": "^2.2.6",
     "@types/mocha": "^7.0.2",
     "@types/node": "^13.13.5",
     "browserify": "^16.5.1",
@@ -46,6 +47,7 @@
   },
   "dependencies": {
     "axios": "^0.19.2",
+    "js-cookie": "^2.2.1",
     "vue": "^2.6.11",
     "vue-router": "^3.1.6",
     "vuex": "^3.4.0",
@@ -60,6 +62,7 @@
     "vue": "global:Vue",
     "vuex": "global:Vuex",
     "vue-router": "global:VueRouter",
-    "axios": "global:axios"
+    "axios": "global:axios",
+    "js-cookie": "global:Cookies"
   }
 }

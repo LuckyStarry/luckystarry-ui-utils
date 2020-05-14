@@ -1,3 +1,4 @@
+import Cookie, { CookieAttributes } from 'js-cookie'
 import VueRouter, { RouteConfig } from 'vue-router'
 import { Profile } from './models'
 
@@ -32,7 +33,7 @@ export interface Cookie {
   set(
     key: string,
     value: String,
-    payliad?: { expiry?: Date; domain?: string }
+    payload?: { expiry?: Date; domain?: string }
   ): void
   get(key: string): string
   delete(key: string): void
@@ -58,8 +59,8 @@ class DefaultRoutes implements Routes {
   }
 
   private router: VueRouter
-  public constants: RouteConfig[]
-  public dynamic: RouteConfig[]
+  public constants: RouteConfig[] = []
+  public dynamic: RouteConfig[] = []
   public reset(): void {
     let router = this.create() as any
     let original = this.router as any
@@ -91,15 +92,28 @@ class DefaultCookie implements Cookie {
   public set(
     key: string,
     value: String,
-    payliad?: { expiry?: Date; domain?: string }
+    payload?: { expiry?: Date; domain?: string }
   ): void {
-    throw new Error('Method not implemented.')
+    if (payload) {
+      let options: CookieAttributes = {}
+      if (payload.expiry) {
+        options.expires = payload.expiry
+      }
+      if (payload.domain) {
+        options.domain = payload.domain
+      }
+      Cookie.set('LUCKYSTARRY_' + key, value, options)
+    } else {
+      Cookie.set('LUCKYSTARRY_' + key, value)
+    }
   }
+
   public get(key: string): string {
-    throw new Error('Method not implemented.')
+    return Cookie.get('LUCKYSTARRY_' + key)
   }
+
   public delete(key: string): void {
-    throw new Error('Method not implemented.')
+    Cookie.remove('LUCKYSTARRY_' + key)
   }
 }
 
@@ -110,13 +124,15 @@ class DefaultToken implements Token {
   }
 
   public set(token: string): void {
-    throw new Error('Method not implemented.')
+    this.context.cookie.set('TOKEN', token)
   }
+
   public get(): string {
-    throw new Error('Method not implemented.')
+    return this.context.cookie.get('TOKEN')
   }
+
   public delete(): void {
-    throw new Error('Method not implemented.')
+    this.context.cookie.delete('TOKEN')
   }
 }
 
@@ -127,15 +143,18 @@ class DefaultSystem implements System {
   }
 
   public setSize(value: string): void {
-    throw new Error('Method not implemented.')
+    this.context.cookie.set('SIZE', value)
   }
+
   public getSize(): string {
-    throw new Error('Method not implemented.')
+    return this.context.cookie.get('SIZE')
   }
+
   public setSidebarStatus(value: string): void {
-    throw new Error('Method not implemented.')
+    this.context.cookie.set('SIDEBAR', value)
   }
+
   public getSidebarStatus(): string {
-    throw new Error('Method not implemented.')
+    return this.context.cookie.get('SIDEBAR')
   }
 }
