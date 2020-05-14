@@ -11,7 +11,7 @@ export interface IErrorLogState {
   logs: IErrorLog[]
 }
 
-@Module
+@Module({ namespaced: true })
 export class ErrorLog extends VuexModule implements IErrorLogState {
   public logs: IErrorLog[] = []
 

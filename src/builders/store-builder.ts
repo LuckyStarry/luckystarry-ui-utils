@@ -17,7 +17,7 @@ export class StoreBuilder {
   }
 
   public build(): Store<IRootState> {
-    let store = new Store<IRootState>({
+    return new Store<IRootState>({
       modules: {
         app: App,
         user: User,
@@ -27,6 +27,5 @@ export class StoreBuilder {
         tagsView: TagsView
       }
     })
-    return store
   }
 }

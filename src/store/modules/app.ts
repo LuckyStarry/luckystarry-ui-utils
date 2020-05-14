@@ -15,7 +15,7 @@ export interface IAppState {
   size: string
 }
 
-@Module
+@Module({ namespaced: true })
 export class App extends VuexModule implements IAppState {
   public sidebar = {
     opened: true,

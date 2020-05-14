@@ -8,7 +8,7 @@ export interface ISettingsState {
   sidebarTextTheme: boolean
 }
 
-@Module
+@Module({ namespaced: true })
 export class Settings extends VuexModule implements ISettingsState {
   public fixedHeader = false
   public showSettings = true

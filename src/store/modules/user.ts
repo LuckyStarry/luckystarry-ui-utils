@@ -11,7 +11,7 @@ export interface IUserState {
   email: string
 }
 
-@Module
+@Module({ namespaced: true })
 export class User extends VuexModule implements IUserState {
   public token = ''
   public id = ''

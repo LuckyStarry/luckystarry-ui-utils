@@ -29,7 +29,7 @@ export interface IPermissionState {
   dynamicRoutes: RouteConfig[]
 }
 
-@Module
+@Module({ namespaced: true })
 export class Permission extends VuexModule implements IPermissionState {
   public routes: RouteConfig[] = []
   public dynamicRoutes: RouteConfig[] = []

@@ -10,7 +10,7 @@ export interface ITagsViewState {
   cachedViews: (string | undefined)[]
 }
 
-@Module
+@Module({ namespaced: true })
 export class TagsView extends VuexModule implements ITagsViewState {
   public visitedViews: ITagView[] = []
   public cachedViews: (string | undefined)[] = []
