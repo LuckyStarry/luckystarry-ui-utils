@@ -1,12 +1,5 @@
-import {
-  Action,
-  getModule,
-  Module,
-  Mutation,
-  VuexModule
-} from 'vuex-module-decorators'
+import { Action, Mutation, VuexModule } from 'vuex-module-decorators'
 import { Context } from '../../context'
-import store from '../index'
 
 export enum DeviceType {
   Mobile,
@@ -22,8 +15,12 @@ export interface IAppState {
   size: string
 }
 
-@Module({ dynamic: true, store, name: 'app' })
-class App extends VuexModule implements IAppState {
+export class App extends VuexModule implements IAppState {
+  public constructor(application: Context) {
+    super({})
+    this.application = application
+  }
+
   public sidebar = {
     opened: true,
     withoutAnimation: false
@@ -81,5 +78,3 @@ class App extends VuexModule implements IAppState {
     this.SET_SIZE(size)
   }
 }
-
-export const AppModule = getModule(App)

@@ -4,9 +4,6 @@ import { Store } from 'vuex'
 import * as builders from './builders'
 import { Context } from './context'
 import { IRootState } from './store'
-import { AppModule } from './store/modules/app'
-import { PermissionModule } from './store/modules/permission'
-import { UserModule } from './store/modules/user'
 
 export class Builder implements builders.VueBuilder {
   private _payload: any = {}
@@ -55,9 +52,6 @@ export class Builder implements builders.VueBuilder {
       ...this._payload,
       render: (h) => h(this._app)
     })
-    AppModule.application = this._context
-    UserModule.application = this._context
-    PermissionModule.application = this._context
     app.$mount('#app')
     return app
   }

@@ -1,11 +1,11 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { AppModule, IAppState } from './modules/app'
-import { ErrorLogModule, IErrorLogState } from './modules/error-log'
-import { IPermissionState, PermissionModule } from './modules/permission'
-import { ISettingsState, SettingsModule } from './modules/settings'
-import { ITagsViewState, TagsViewModule } from './modules/tags-view'
-import { IUserState, UserModule } from './modules/user'
+import { App, IAppState } from './modules/app'
+import { ErrorLog, IErrorLogState } from './modules/error-log'
+import { IPermissionState, Permission } from './modules/permission'
+import { ISettingsState, Settings } from './modules/settings'
+import { ITagsViewState, TagsView } from './modules/tags-view'
+import { IUserState, User } from './modules/user'
 
 Vue.use(Vuex)
 
@@ -18,9 +18,9 @@ export interface IRootState {
   settings: ISettingsState
 }
 
-export { AppModule }
-export { ErrorLogModule }
-export { PermissionModule }
-export { SettingsModule }
-export { TagsViewModule }
-export { UserModule }
+export { App }
+export { ErrorLog }
+export { Permission }
+export { Settings }
+export { TagsView }
+export { User }

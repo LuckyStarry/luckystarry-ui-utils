@@ -1,11 +1,4 @@
-import {
-  Action,
-  getModule,
-  Module,
-  Mutation,
-  VuexModule
-} from 'vuex-module-decorators'
-import store from '../index'
+import { Action, Mutation, VuexModule } from 'vuex-module-decorators'
 
 export interface ISettingsState {
   fixedHeader: boolean
@@ -15,8 +8,7 @@ export interface ISettingsState {
   sidebarTextTheme: boolean
 }
 
-@Module({ dynamic: true, store, name: 'settings' })
-class Settings extends VuexModule implements ISettingsState {
+export class Settings extends VuexModule implements ISettingsState {
   public fixedHeader = false
   public showSettings = true
   public showTagsView = true
@@ -37,5 +29,3 @@ class Settings extends VuexModule implements ISettingsState {
     this.CHANGE_SETTING(payload)
   }
 }
-
-export const SettingsModule = getModule(Settings)

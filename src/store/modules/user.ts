@@ -1,14 +1,6 @@
-import {
-  Action,
-  getModule,
-  Module,
-  Mutation,
-  VuexModule
-} from 'vuex-module-decorators'
+import { RouteConfig } from 'vue-router'
+import { Action, Mutation, VuexModule } from 'vuex-module-decorators'
 import { Context } from '../../context'
-import store from '../index'
-import { PermissionModule } from './permission'
-import { TagsViewModule } from './tags-view'
 
 export interface IUserState {
   token: string
@@ -19,8 +11,12 @@ export interface IUserState {
   email: string
 }
 
-@Module({ dynamic: true, store, name: 'user' })
-class User extends VuexModule implements IUserState {
+export class User extends VuexModule implements IUserState {
+  public constructor(application: Context) {
+    super({})
+    this.application = application
+  }
+
   public token = ''
   public id = ''
   public name = ''
@@ -120,11 +116,16 @@ class User extends VuexModule implements IUserState {
     await this.GetUserInfo()
     this.application.routes.reset()
     // Generate dynamic accessible routes based on roles
-    PermissionModule.GenerateRoutes(this.roles)
+    await this.context.dispatch('premission/GenerateRoutes', this.roles, {
+      root: true
+    })
     // Add generated routes
-    this.application.routes.add(...PermissionModule.dynamicRoutes)
+    let dynamicRoutes: RouteConfig[] = this.context.rootState[
+      'premission/dynamicRoutes'
+    ]
+    this.application.routes.add(...dynamicRoutes)
     // Reset visited views and cached views
-    TagsViewModule.delAllViews()
+    await this.context.dispatch('treeView/delAllViews')
   }
 
   @Action
@@ -137,10 +138,8 @@ class User extends VuexModule implements IUserState {
     this.application.routes.reset()
 
     // Reset visited views and cached views
-    TagsViewModule.delAllViews()
+    await this.context.dispatch('treeView/delAllViews')
     this.SET_TOKEN('')
     this.SET_ROLES([])
   }
 }
-
-export const UserModule = getModule(User)
