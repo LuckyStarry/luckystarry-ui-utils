@@ -27,11 +27,11 @@ export class ErrorLog extends VuexModule implements IErrorLogState {
 
   @Action
   public AddErrorLog(log: IErrorLog) {
-    this.ADD_ERROR_LOG(log)
+    this.context.commit('ADD_ERROR_LOG', log)
   }
 
   @Action
   public ClearErrorLog() {
-    this.CLEAR_ERROR_LOG()
+    this.context.commit('CLEAR_ERROR_LOG')
   }
 }

@@ -68,21 +68,21 @@ export class App extends VuexModule<IAppState, IRootState>
 
   @Action
   public ToggleSideBar(withoutAnimation: boolean) {
-    this.TOGGLE_SIDEBAR(withoutAnimation)
+    this.context.commit('TOGGLE_SIDEBAR', withoutAnimation)
   }
 
   @Action
   public CloseSideBar(withoutAnimation: boolean) {
-    this.CLOSE_SIDEBAR(withoutAnimation)
+    this.context.commit('CLOSE_SIDEBAR', withoutAnimation)
   }
 
   @Action
   public ToggleDevice(device: DeviceType) {
-    this.TOGGLE_DEVICE(device)
+    this.context.commit('TOGGLE_DEVICE', device)
   }
 
   @Action
   public SetSize(size: string) {
-    this.SET_SIZE(size)
+    this.context.commit('SET_SIZE', size)
   }
 }

@@ -60,6 +60,6 @@ export class Permission extends VuexModule<IPermissionState, IRootState>
         roles
       )
     }
-    this.SET_ROUTES(accessedRoutes)
+    this.context.commit('SET_ROUTES', accessedRoutes)
   }
 }

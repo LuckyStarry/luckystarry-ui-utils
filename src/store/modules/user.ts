@@ -81,14 +81,14 @@ export class User extends VuexModule<IUserState, IRootState>
   public async Callback(getToken: () => Promise<{ token: string }>) {
     let data = await getToken()
     this.context.rootState.context.token.set(data.token)
-    this.SET_TOKEN(data.token)
+    this.context.commit('SET_TOKEN', data.token)
   }
 
   @Action
   public ResetToken() {
     this.context.rootState.context.token.delete()
-    this.SET_TOKEN('')
-    this.SET_ROLES([])
+    this.context.commit('SET_TOKEN', '')
+    this.context.commit('SET_ROLES', [])
   }
 
   @Action
@@ -115,19 +115,19 @@ export class User extends VuexModule<IUserState, IRootState>
     if (!roles || roles.length <= 0) {
       throw Error('GetUserInfo: roles must be a non-null array!')
     }
-    this.SET_ROLES(roles)
-    this.SET_ID(id)
-    this.SET_NAME(name)
-    this.SET_AVATAR(avatar)
-    this.SET_INTRODUCTION(introduction)
-    this.SET_EMAIL(email)
+    this.context.commit('SET_ROLES', roles || [])
+    this.context.commit('SET_ID', id)
+    this.context.commit('SET_NAME', name)
+    this.context.commit('SET_AVATAR', avatar)
+    this.context.commit('SET_INTRODUCTION', introduction)
+    this.context.commit('SET_EMAIL', email)
   }
 
   @Action
   public async ChangeRoles(role: string) {
     // Dynamically modify permissions
     const token = role + '-token'
-    this.SET_TOKEN(token)
+    this.context.commit('SET_TOKEN', token)
     this.context.rootState.context.token.set(token)
     await this.GetUserInfo()
     this.context.rootState.context.routes.reset()
@@ -155,7 +155,7 @@ export class User extends VuexModule<IUserState, IRootState>
 
     // Reset visited views and cached views
     await this.context.dispatch('treeView/delAllViews')
-    this.SET_TOKEN('')
-    this.SET_ROLES([])
+    this.context.commit('SET_TOKEN', '')
+    this.context.commit('SET_ROLES', [])
   }
 }
