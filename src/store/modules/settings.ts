@@ -1,4 +1,4 @@
-import { Action, Mutation, VuexModule, Module } from 'vuex-module-decorators'
+import { Action, Module, Mutation, VuexModule } from 'vuex-module-decorators'
 
 export interface ISettingsState {
   fixedHeader: boolean
@@ -15,6 +15,26 @@ export class Settings extends VuexModule implements ISettingsState {
   public showTagsView = true
   public showSidebarLogo = true
   public sidebarTextTheme = true
+
+  public get FixedHeader(): boolean {
+    return this.fixedHeader
+  }
+
+  public get ShowSettings(): boolean {
+    return this.showSettings
+  }
+
+  public get ShowTagsView(): boolean {
+    return this.showTagsView
+  }
+
+  public get ShowSidebarLogo(): boolean {
+    return this.showSidebarLogo
+  }
+
+  public get SidebarTextTheme(): boolean {
+    return this.sidebarTextTheme
+  }
 
   @Mutation
   private CHANGE_SETTING(payload: { key: string; value: any }) {

@@ -22,6 +22,26 @@ export class User extends VuexModule<IUserState, IRootState>
   public roles: string[] = []
   public email = ''
 
+  public Token(): string {
+    return this.token || ''
+  }
+
+  public ID(): string {
+    return this.id || ''
+  }
+
+  public Name(): string {
+    return this.name || ''
+  }
+
+  public Avatar(): string {
+    return this.avatar || ''
+  }
+
+  public Roles(): string[] {
+    return this.roles || []
+  }
+
   @Mutation
   private SET_TOKEN(token: string) {
     this.token = token
