@@ -2,6 +2,7 @@
   "include": ["**/*.ts"],
   "exclude": ["node_modules"],
   "compilerOptions": {
+    "experimentalDecorators": true,
     "esModuleInterop": true,
     "module": "commonjs",
     "target": "es5",
