@@ -29,6 +29,18 @@ export class App extends VuexModule implements IAppState {
   public size = 'mini'
   public application!: Context
 
+  public get Sidebar() {
+    return this.sidebar
+  }
+
+  public get Size(): string {
+    return this.size
+  }
+
+  public get Device(): DeviceType {
+    return this.device
+  }
+
   @Mutation
   private TOGGLE_SIDEBAR(withoutAnimation: boolean) {
     this.sidebar.opened = !this.sidebar.opened
