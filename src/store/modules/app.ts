@@ -1,4 +1,4 @@
-import { Action, Mutation, VuexModule } from 'vuex-module-decorators'
+import { Action, Module, Mutation, VuexModule } from 'vuex-module-decorators'
 import { Context } from '../../context'
 
 export enum DeviceType {
@@ -15,6 +15,7 @@ export interface IAppState {
   size: string
 }
 
+@Module
 export class App extends VuexModule implements IAppState {
   public constructor(application: Context) {
     super({})

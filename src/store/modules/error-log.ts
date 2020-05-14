@@ -1,4 +1,4 @@
-import { Action, Mutation, VuexModule } from 'vuex-module-decorators'
+import { Action, Module, Mutation, VuexModule } from 'vuex-module-decorators'
 
 interface IErrorLog {
   err: Error
@@ -11,6 +11,7 @@ export interface IErrorLogState {
   logs: IErrorLog[]
 }
 
+@Module
 export class ErrorLog extends VuexModule implements IErrorLogState {
   public logs: IErrorLog[] = []
 

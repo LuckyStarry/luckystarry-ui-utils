@@ -1,5 +1,5 @@
 import { Route } from 'vue-router'
-import { Action, Mutation, VuexModule } from 'vuex-module-decorators'
+import { Action, Module, Mutation, VuexModule } from 'vuex-module-decorators'
 
 export interface ITagView extends Partial<Route> {
   title?: string
@@ -10,6 +10,7 @@ export interface ITagsViewState {
   cachedViews: (string | undefined)[]
 }
 
+@Module
 export class TagsView extends VuexModule implements ITagsViewState {
   public visitedViews: ITagView[] = []
   public cachedViews: (string | undefined)[] = []

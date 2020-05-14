@@ -1,5 +1,5 @@
 import { RouteConfig } from 'vue-router'
-import { Action, Mutation, VuexModule } from 'vuex-module-decorators'
+import { Action, Module, Mutation, VuexModule } from 'vuex-module-decorators'
 import { Context } from '../../context'
 
 export interface IUserState {
@@ -11,6 +11,7 @@ export interface IUserState {
   email: string
 }
 
+@Module
 export class User extends VuexModule implements IUserState {
   public constructor(application: Context) {
     super({})

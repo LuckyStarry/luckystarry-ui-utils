@@ -1,4 +1,4 @@
-import { Action, Mutation, VuexModule } from 'vuex-module-decorators'
+import { Action, Mutation, VuexModule, Module } from 'vuex-module-decorators'
 
 export interface ISettingsState {
   fixedHeader: boolean
@@ -8,6 +8,7 @@ export interface ISettingsState {
   sidebarTextTheme: boolean
 }
 
+@Module
 export class Settings extends VuexModule implements ISettingsState {
   public fixedHeader = false
   public showSettings = true

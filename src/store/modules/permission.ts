@@ -1,5 +1,5 @@
 import { RouteConfig } from 'vue-router'
-import { Action, Mutation, VuexModule } from 'vuex-module-decorators'
+import { Action, Module, Mutation, VuexModule } from 'vuex-module-decorators'
 import { Context } from '../../context'
 
 const hasPermission = (roles: string[], route: RouteConfig) => {
@@ -29,6 +29,7 @@ export interface IPermissionState {
   dynamicRoutes: RouteConfig[]
 }
 
+@Module
 export class Permission extends VuexModule implements IPermissionState {
   public constructor(application: Context) {
     super({})
