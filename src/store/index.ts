@@ -1,11 +1,11 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { IAppState } from './modules/app'
-import { IErrorLogState } from './modules/error-log'
-import { IPermissionState } from './modules/permission'
-import { ISettingsState } from './modules/settings'
-import { ITagsViewState } from './modules/tags-view'
-import { IUserState } from './modules/user'
+import { AppModule, IAppState } from './modules/app'
+import { ErrorLogModule, IErrorLogState } from './modules/error-log'
+import { IPermissionState, PermissionModule } from './modules/permission'
+import { ISettingsState, SettingsModule } from './modules/settings'
+import { ITagsViewState, TagsViewModule } from './modules/tags-view'
+import { IUserState, UserModule } from './modules/user'
 
 Vue.use(Vuex)
 
@@ -18,5 +18,9 @@ export interface IRootState {
   settings: ISettingsState
 }
 
-// Declare empty store first, dynamically register all modules later.
-export default new Vuex.Store<IRootState>({})
+export { AppModule }
+export { ErrorLogModule }
+export { PermissionModule }
+export { SettingsModule }
+export { TagsViewModule }
+export { UserModule }
