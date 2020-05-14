@@ -1,6 +1,6 @@
 import { RouteConfig } from 'vue-router'
 import { Action, Module, Mutation, VuexModule } from 'vuex-module-decorators'
-import { Context } from '../../context'
+import { IRootState } from '..'
 
 const hasPermission = (roles: string[], route: RouteConfig) => {
   if (route.meta && route.meta.roles) {
@@ -26,28 +26,39 @@ export const filterAsyncRoutes = (routes: RouteConfig[], roles: string[]) => {
 
 export interface IPermissionState {
   routes: RouteConfig[]
-  dynamicRoutes: RouteConfig[]
+  dynamic: RouteConfig[]
 }
 
 @Module({ namespaced: true })
-export class Permission extends VuexModule implements IPermissionState {
+export class Permission extends VuexModule<IPermissionState, IRootState>
+  implements IPermissionState {
   public routes: RouteConfig[] = []
-  public dynamicRoutes: RouteConfig[] = []
-  public application: Context
+  public dynamic: RouteConfig[] = []
+
+  public get Routes(): RouteConfig[] {
+    return this.routes || []
+  }
+
+  public get Dynamic(): RouteConfig[] {
+    return this.dynamic || []
+  }
 
   @Mutation
   private SET_ROUTES(routes: RouteConfig[]) {
-    this.routes = this.application.routes.constants.concat(routes)
-    this.dynamicRoutes = routes
+    this.routes = this.context.rootState.context.routes.constants.concat(routes)
+    this.dynamic = routes
   }
 
   @Action
   public GenerateRoutes(roles: string[]) {
-    let accessedRoutes
+    let accessedRoutes: RouteConfig[]
     if (roles.includes('admin')) {
-      accessedRoutes = this.application.routes.dynamic
+      accessedRoutes = this.context.rootState.context.routes.dynamic
     } else {
-      accessedRoutes = filterAsyncRoutes(this.application.routes.dynamic, roles)
+      accessedRoutes = filterAsyncRoutes(
+        this.context.rootState.context.routes.dynamic,
+        roles
+      )
     }
     this.SET_ROUTES(accessedRoutes)
   }

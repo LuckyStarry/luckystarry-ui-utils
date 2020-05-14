@@ -1,6 +1,6 @@
 import { RouteConfig } from 'vue-router'
 import { Action, Module, Mutation, VuexModule } from 'vuex-module-decorators'
-import { Context } from '../../context'
+import { IRootState } from '../root-state'
 
 export interface IUserState {
   token: string
@@ -12,7 +12,8 @@ export interface IUserState {
 }
 
 @Module({ namespaced: true })
-export class User extends VuexModule implements IUserState {
+export class User extends VuexModule<IUserState, IRootState>
+  implements IUserState {
   public token = ''
   public id = ''
   public name = ''
@@ -20,7 +21,6 @@ export class User extends VuexModule implements IUserState {
   public introduction = ''
   public roles: string[] = []
   public email = ''
-  public application: Context
 
   @Mutation
   private SET_TOKEN(token: string) {
@@ -60,13 +60,13 @@ export class User extends VuexModule implements IUserState {
   @Action
   public async Callback(getToken: () => Promise<{ token: string }>) {
     let data = await getToken()
-    this.application.token.set(data.token)
+    this.context.rootState.context.token.set(data.token)
     this.SET_TOKEN(data.token)
   }
 
   @Action
   public ResetToken() {
-    this.application.token.delete()
+    this.context.rootState.context.token.delete()
     this.SET_TOKEN('')
     this.SET_ROLES([])
   }
@@ -76,7 +76,7 @@ export class User extends VuexModule implements IUserState {
     if (this.token === '') {
       throw Error('GetUserInfo: token is undefined!')
     }
-    let response = await this.application.apis.getProfile()
+    let response = await this.context.rootState.context.apis.getProfile()
     if (!response) {
       throw Error('Verification failed, please Login again.')
     }
@@ -108,9 +108,9 @@ export class User extends VuexModule implements IUserState {
     // Dynamically modify permissions
     const token = role + '-token'
     this.SET_TOKEN(token)
-    this.application.token.set(token)
+    this.context.rootState.context.token.set(token)
     await this.GetUserInfo()
-    this.application.routes.reset()
+    this.context.rootState.context.routes.reset()
     // Generate dynamic accessible routes based on roles
     await this.context.dispatch('premission/GenerateRoutes', this.roles, {
       root: true
@@ -119,7 +119,7 @@ export class User extends VuexModule implements IUserState {
     let dynamicRoutes: RouteConfig[] = this.context.rootState[
       'premission/dynamicRoutes'
     ]
-    this.application.routes.add(...dynamicRoutes)
+    this.context.rootState.context.routes.add(...dynamicRoutes)
     // Reset visited views and cached views
     await this.context.dispatch('treeView/delAllViews')
   }
@@ -130,8 +130,8 @@ export class User extends VuexModule implements IUserState {
       throw Error('LogOut: token is undefined!')
     }
     // await api.oauth.logout()
-    this.application.token.delete()
-    this.application.routes.reset()
+    this.context.rootState.context.token.delete()
+    this.context.rootState.context.routes.reset()
 
     // Reset visited views and cached views
     await this.context.dispatch('treeView/delAllViews')

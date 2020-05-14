@@ -1,5 +1,5 @@
 import { Action, Module, Mutation, VuexModule } from 'vuex-module-decorators'
-import { Context } from '../../context'
+import { IRootState } from '../root-state'
 
 export enum DeviceType {
   Mobile,
@@ -16,14 +16,14 @@ export interface IAppState {
 }
 
 @Module({ namespaced: true })
-export class App extends VuexModule implements IAppState {
+export class App extends VuexModule<IAppState, IRootState>
+  implements IAppState {
   public sidebar = {
     opened: true,
     withoutAnimation: false
   }
   public device = DeviceType.Desktop
   public size = 'mini'
-  public application!: Context
 
   public get Sidebar() {
     return this.sidebar
@@ -42,9 +42,9 @@ export class App extends VuexModule implements IAppState {
     this.sidebar.opened = !this.sidebar.opened
     this.sidebar.withoutAnimation = withoutAnimation
     if (this.sidebar.opened) {
-      this.application.system.setSidebarStatus('opened')
+      this.context.rootState.context.system.setSidebarStatus('opened')
     } else {
-      this.application.system.setSidebarStatus('closed')
+      this.context.rootState.context.system.setSidebarStatus('closed')
     }
   }
 
@@ -52,7 +52,7 @@ export class App extends VuexModule implements IAppState {
   private CLOSE_SIDEBAR(withoutAnimation: boolean) {
     this.sidebar.opened = false
     this.sidebar.withoutAnimation = withoutAnimation
-    this.application.system.setSidebarStatus('closed')
+    this.context.rootState.context.system.setSidebarStatus('closed')
   }
 
   @Mutation
@@ -63,7 +63,7 @@ export class App extends VuexModule implements IAppState {
   @Mutation
   private SET_SIZE(size: string) {
     this.size = size
-    this.application.system.setSize(this.size)
+    this.context.rootState.context.system.setSize(this.size)
   }
 
   @Action
