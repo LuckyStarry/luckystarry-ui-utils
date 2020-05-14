@@ -45,6 +45,12 @@ export class Builder implements builders.VueBuilder {
   }
 
   public build(): Vue {
+    if (!this._routers) {
+      this.router(() => {})
+    }
+    if (!this._store) {
+      this.store(() => {})
+    }
     let app = new Vue({
       router: this._routers,
       store: this._store,
