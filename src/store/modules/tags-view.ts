@@ -1,9 +1,5 @@
-import { Route } from 'vue-router'
 import { Action, Module, Mutation, VuexModule } from 'vuex-module-decorators'
-
-export interface ITagView extends Partial<Route> {
-  title?: string
-}
+import { ITagView } from '../tags-view'
 
 export interface ITagsViewState {
   visitedViews: ITagView[]
