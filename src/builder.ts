@@ -1,15 +1,18 @@
 import Vue, { VueConstructor } from 'vue'
-import VueRouter from 'vue-router'
+import VueRouter, { Route } from 'vue-router'
 import { Store } from 'vuex'
 import * as builders from './builders'
 import { Context } from './context'
 import { IRootState } from './store'
+import { ui } from './utils'
 
 export class Builder implements builders.VueBuilder {
   private _payload: any = {}
   private _routers: VueRouter
   private _store: Store<IRootState>
   private _app: VueConstructor
+  private _process: ui.Process
+  private _message: ui.Message
   private _context: Context
 
   public constructor(context?: Context) {
@@ -39,6 +42,16 @@ export class Builder implements builders.VueBuilder {
     return this
   }
 
+  public process(util: ui.Process): Builder {
+    this._process = util
+    return this
+  }
+
+  public message(util: ui.Message): Builder {
+    this._message = util
+    return this
+  }
+
   public app(app: VueConstructor): Builder {
     this._app = app
     return this
@@ -51,10 +64,59 @@ export class Builder implements builders.VueBuilder {
     if (!this._store) {
       this.store(() => {})
     }
+    let router = this._routers
+    let store = this._store
+
+    router.beforeEach(async (to: Route, _: Route, next: any) => {
+      // Start progress bar
+      this._process?.start()
+      // Determine whether the user has logged in
+      if (store.state.user.token) {
+        if (to.path === '/login') {
+          // If is logged in, redirect to the home page
+          next({ path: '/' })
+          this._process?.done()
+        } else {
+          // Check whether the user has obtained his permission roles
+          if (store.state.user.roles.length === 0) {
+            try {
+              // Note: roles must be a object array! such as: ['admin'] or ['developer', 'editor']
+              await store.dispatch('user/GetUserInfo')
+              const roles = store.state.user.roles
+              // Generate accessible routes map based on role
+              await store.dispatch('permission/GenerateRoutes', roles)
+              // Dynamically add accessible routes
+              router.addRoutes(store.state.permission.dynamic)
+              // Hack: ensure addRoutes is complete
+              // Set the replace: true, so the navigation will not leave a history record
+              next({ ...to, replace: true })
+            } catch (err) {
+              // Remove token and redirect to login page
+              await store.dispatch('user/ResetToken')
+              this._message?.error(err || 'Has Error')
+              next(`/login?redirect=${to.path}`)
+              this._process?.done()
+            }
+          } else {
+            next()
+          }
+        }
+      } else {
+        // Has no token
+        if (to.meta?.white) {
+          // In the free login whitelist, go directly
+          next()
+        } else {
+          // Other pages that do not have permission to access are redirected to the login page.
+          next(`/login?redirect=${to.path}`)
+          this._process?.done()
+        }
+      }
+    })
+
     let app = new Vue({
-      router: this._routers,
-      store: this._store,
-      // i18n,
+      router,
+      store,
       ...this._payload,
       render: (h) => h(this._app)
     })

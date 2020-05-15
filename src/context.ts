@@ -15,6 +15,10 @@ export class Context {
   public cookie: Cookie
   public token: Token
   public system: System
+
+  public static create(): Context {
+    return new Context()
+  }
 }
 
 export interface Apis {
