@@ -1,4 +1,5 @@
 import { Action, Module, Mutation, VuexModule } from 'vuex-module-decorators'
+import { Context } from '../../context'
 import { IRootState } from '../root-state'
 
 export enum DeviceType {
@@ -38,21 +39,27 @@ export class App extends VuexModule<IAppState, IRootState>
   }
 
   @Mutation
-  private TOGGLE_SIDEBAR(withoutAnimation: boolean) {
+  private TOGGLE_SIDEBAR(payload: {
+    withoutAnimation: boolean
+    context: Context
+  }) {
     this.sidebar.opened = !this.sidebar.opened
-    this.sidebar.withoutAnimation = withoutAnimation
+    this.sidebar.withoutAnimation = payload.withoutAnimation
     if (this.sidebar.opened) {
-      this.context.rootState.context.system.setSidebarStatus('opened')
+      payload.context.system.setSidebarStatus('opened')
     } else {
-      this.context.rootState.context.system.setSidebarStatus('closed')
+      payload.context.system.setSidebarStatus('closed')
     }
   }
 
   @Mutation
-  private CLOSE_SIDEBAR(withoutAnimation: boolean) {
+  private CLOSE_SIDEBAR(payload: {
+    withoutAnimation: boolean
+    context: Context
+  }) {
     this.sidebar.opened = false
-    this.sidebar.withoutAnimation = withoutAnimation
-    this.context.rootState.context.system.setSidebarStatus('closed')
+    this.sidebar.withoutAnimation = payload.withoutAnimation
+    payload.context.system.setSidebarStatus('closed')
   }
 
   @Mutation
@@ -68,12 +75,18 @@ export class App extends VuexModule<IAppState, IRootState>
 
   @Action
   public ToggleSideBar(withoutAnimation: boolean) {
-    this.context.commit('TOGGLE_SIDEBAR', withoutAnimation)
+    this.context.commit('TOGGLE_SIDEBAR', {
+      withoutAnimation,
+      context: this.context.rootState.context
+    })
   }
 
   @Action
   public CloseSideBar(withoutAnimation: boolean) {
-    this.context.commit('CLOSE_SIDEBAR', withoutAnimation)
+    this.context.commit('CLOSE_SIDEBAR', {
+      withoutAnimation,
+      context: this.context.rootState.context
+    })
   }
 
   @Action
