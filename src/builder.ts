@@ -14,6 +14,7 @@ export class Builder implements builders.VueBuilder {
   private _process: ui.Process
   private _message: ui.Message
   private _context: Context
+  private _title: string
 
   public constructor(context?: Context) {
     this._context = context || new Context()
@@ -54,6 +55,11 @@ export class Builder implements builders.VueBuilder {
 
   public app(app: VueConstructor): Builder {
     this._app = app
+    return this
+  }
+
+  public title(title: string): Builder {
+    this._title = title
     return this
   }
 
@@ -112,6 +118,10 @@ export class Builder implements builders.VueBuilder {
           this._process?.done()
         }
       }
+    })
+
+    router.afterEach((to: Route) => {
+      this._process?.done()
     })
 
     let app = new Vue({
