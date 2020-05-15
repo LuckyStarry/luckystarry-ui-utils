@@ -1,11 +1,7 @@
 import { Action, Module, Mutation, VuexModule } from 'vuex-module-decorators'
 import { Context } from '../../context'
+import { DeviceType } from '../device-type'
 import { IRootState } from '../root-state'
-
-export enum DeviceType {
-  Mobile,
-  Desktop
-}
 
 export interface IAppState {
   device: DeviceType

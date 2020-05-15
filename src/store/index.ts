@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { App, ErrorLog, Permission, Settings, TagsView, User } from './modules'
+export { DeviceType } from './device-type'
 export { IRootState } from './root-state'
 export { App }
 export { ErrorLog }
