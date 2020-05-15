@@ -11,6 +11,14 @@ export class TagsView extends VuexModule implements ITagsViewState {
   public visitedViews: ITagView[] = []
   public cachedViews: (string | undefined)[] = []
 
+  public get VisitedViews(): ITagView[] {
+    return this.visitedViews || []
+  }
+
+  public get CachedViews(): (string | undefined)[] {
+    return this.cachedViews || []
+  }
+
   @Mutation
   private ADD_VISITED_VIEW(view: ITagView) {
     if (this.visitedViews.some((v) => v.path === view.path)) return
