@@ -9,7 +9,7 @@
     "prebuild": "npm run clean && npm run lint",
     "build": "tsc",
     "postbuild": "npm run bundle",
-    "bundle": "browserify --external vue --external vuex --external vue-router --external axios --external js-cookie dist/index.js --standalone lsui > dist/index.bundle.js",
+    "bundle": "browserify --external vue --external vuex --external vue-router --external axios --external uuid --external js-cookie dist/index.js --standalone lsui > dist/index.bundle.js",
     "postbundle": "npm run uglify",
     "uglify": "uglifyjs dist/index.bundle.js --compress --mangle --output dist/index.min.js",
     "test": "nyc mocha",
@@ -66,6 +66,7 @@
     "vuex": "global:Vuex",
     "vue-router": "global:VueRouter",
     "axios": "global:axios",
+    "uuid": "global:uuid",
     "js-cookie": "global:Cookies"
   }
 }
