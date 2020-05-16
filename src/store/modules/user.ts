@@ -3,6 +3,7 @@ import { Action, Module, Mutation, VuexModule } from 'vuex-module-decorators'
 import { IRootState } from '../root-state'
 
 export interface IUserState {
+  id: string
   token: string
   name: string
   avatar: string
@@ -36,6 +37,14 @@ export class User extends VuexModule<IUserState, IRootState>
 
   public Avatar(): string {
     return this.avatar || ''
+  }
+
+  public Introduction(): string {
+    return this.introduction || ''
+  }
+
+  public Email(): string {
+    return this.email || ''
   }
 
   public Roles(): string[] {

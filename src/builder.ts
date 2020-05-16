@@ -3,6 +3,7 @@ import VueRouter, { Route } from 'vue-router'
 import { Store } from 'vuex'
 import * as builders from './builders'
 import { Context } from './context'
+import { Premission } from './directives'
 import { IRootState } from './store'
 import { ui } from './utils'
 
@@ -128,7 +129,8 @@ export class Builder implements builders.VueBuilder {
       router,
       store,
       ...this._payload,
-      render: (h) => h(this._app)
+      render: (h) => h(this._app),
+      directives: { permission: new Premission(store) }
     })
     app.$mount('#app')
     return app
