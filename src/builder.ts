@@ -82,7 +82,7 @@ export class Builder implements builders.VueBuilder {
     let store = this._store
 
     axiosInterceptor(this._axios, store)
-    routerInterceptor(router, store)
+    routerInterceptor(router, store, this._process, this._message)
 
     let app = new Vue({
       router,
@@ -117,16 +117,21 @@ function axiosInterceptor(axios: AxiosInstance, store: Store<IRootState>) {
   )
 }
 
-function routerInterceptor(router: VueRouter, store: Store<IRootState>) {
+function routerInterceptor(
+  router: VueRouter,
+  store: Store<IRootState>,
+  process: ui.Process,
+  message: ui.Message
+) {
   router.beforeEach(async (to: Route, _: Route, next: any) => {
     // Start progress bar
-    this._process?.start()
+    process?.start()
     // Determine whether the user has logged in
     if (store.state.user.token) {
       if (to.path === '/login') {
         // If is logged in, redirect to the home page
         next({ path: '/' })
-        this._process?.done()
+        process?.done()
       } else {
         // Check whether the user has obtained his permission roles
         if (store.state.user.roles.length === 0) {
@@ -144,9 +149,9 @@ function routerInterceptor(router: VueRouter, store: Store<IRootState>) {
           } catch (err) {
             // Remove token and redirect to login page
             await store.dispatch('user/ResetToken')
-            this._message?.error(err || 'Has Error')
+            message?.error(err || 'Has Error')
             next(`/login?redirect=${to.path}`)
-            this._process?.done()
+            process?.done()
           }
         } else {
           next()
@@ -160,12 +165,12 @@ function routerInterceptor(router: VueRouter, store: Store<IRootState>) {
       } else {
         // Other pages that do not have permission to access are redirected to the login page.
         next(`/login?redirect=${to.path}`)
-        this._process?.done()
+        process?.done()
       }
     }
   })
 
   router.afterEach((to: Route) => {
-    this._process?.done()
+    process?.done()
   })
 }
