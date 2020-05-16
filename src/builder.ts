@@ -1,3 +1,5 @@
+import { AxiosInstance } from 'axios'
+import { v4 as uuid } from 'uuid'
 import Vue, { VueConstructor } from 'vue'
 import VueRouter, { Route } from 'vue-router'
 import { Store } from 'vuex'
@@ -16,6 +18,7 @@ export class Builder implements builders.VueBuilder {
   private _message: ui.Message
   private _context: Context
   private _title: string
+  private _axios: AxiosInstance
 
   public constructor(context?: Context) {
     this._context = context || new Context()
@@ -64,6 +67,10 @@ export class Builder implements builders.VueBuilder {
     return this
   }
 
+  public axios(axios: AxiosInstance) {
+    this._axios = axios
+  }
+
   public build(): Vue {
     if (!this._routers) {
       this.router(() => {})
@@ -74,56 +81,8 @@ export class Builder implements builders.VueBuilder {
     let router = this._routers
     let store = this._store
 
-    router.beforeEach(async (to: Route, _: Route, next: any) => {
-      // Start progress bar
-      this._process?.start()
-      // Determine whether the user has logged in
-      if (store.state.user.token) {
-        if (to.path === '/login') {
-          // If is logged in, redirect to the home page
-          next({ path: '/' })
-          this._process?.done()
-        } else {
-          // Check whether the user has obtained his permission roles
-          if (store.state.user.roles.length === 0) {
-            try {
-              // Note: roles must be a object array! such as: ['admin'] or ['developer', 'editor']
-              await store.dispatch('user/GetUserInfo')
-              const roles = store.state.user.roles
-              // Generate accessible routes map based on role
-              await store.dispatch('permission/GenerateRoutes', roles)
-              // Dynamically add accessible routes
-              router.addRoutes(store.state.permission.dynamic)
-              // Hack: ensure addRoutes is complete
-              // Set the replace: true, so the navigation will not leave a history record
-              next({ ...to, replace: true })
-            } catch (err) {
-              // Remove token and redirect to login page
-              await store.dispatch('user/ResetToken')
-              this._message?.error(err || 'Has Error')
-              next(`/login?redirect=${to.path}`)
-              this._process?.done()
-            }
-          } else {
-            next()
-          }
-        }
-      } else {
-        // Has no token
-        if (to.meta?.white) {
-          // In the free login whitelist, go directly
-          next()
-        } else {
-          // Other pages that do not have permission to access are redirected to the login page.
-          next(`/login?redirect=${to.path}`)
-          this._process?.done()
-        }
-      }
-    })
-
-    router.afterEach((to: Route) => {
-      this._process?.done()
-    })
+    axiosInterceptor(this._axios, store)
+    routerInterceptor(router, store)
 
     let app = new Vue({
       router,
@@ -135,4 +94,78 @@ export class Builder implements builders.VueBuilder {
     app.$mount('#app')
     return app
   }
+}
+
+function axiosInterceptor(axios: AxiosInstance, store: Store<IRootState>) {
+  if (!axios) {
+    return
+  }
+  axios.interceptors.request.use(
+    (config) => {
+      // Add X-Access-Token header to every request, you can add other custom headers here
+      if (store.state.user.token) {
+        config.headers['Authorization'] = `Berear ${store.state.user.token}`
+        config.headers['X-Authorization'] = store.state.user.token
+      }
+      config.headers['X-Ca-Nonce'] = uuid()
+      return config
+    },
+    (error) => {
+      // tslint:disable-next-line: no-floating-promises
+      Promise.reject(error)
+    }
+  )
+}
+
+function routerInterceptor(router: VueRouter, store: Store<IRootState>) {
+  router.beforeEach(async (to: Route, _: Route, next: any) => {
+    // Start progress bar
+    this._process?.start()
+    // Determine whether the user has logged in
+    if (store.state.user.token) {
+      if (to.path === '/login') {
+        // If is logged in, redirect to the home page
+        next({ path: '/' })
+        this._process?.done()
+      } else {
+        // Check whether the user has obtained his permission roles
+        if (store.state.user.roles.length === 0) {
+          try {
+            // Note: roles must be a object array! such as: ['admin'] or ['developer', 'editor']
+            await store.dispatch('user/GetUserInfo')
+            const roles = store.state.user.roles
+            // Generate accessible routes map based on role
+            await store.dispatch('permission/GenerateRoutes', roles)
+            // Dynamically add accessible routes
+            router.addRoutes(store.state.permission.dynamic)
+            // Hack: ensure addRoutes is complete
+            // Set the replace: true, so the navigation will not leave a history record
+            next({ ...to, replace: true })
+          } catch (err) {
+            // Remove token and redirect to login page
+            await store.dispatch('user/ResetToken')
+            this._message?.error(err || 'Has Error')
+            next(`/login?redirect=${to.path}`)
+            this._process?.done()
+          }
+        } else {
+          next()
+        }
+      }
+    } else {
+      // Has no token
+      if (to.meta?.white) {
+        // In the free login whitelist, go directly
+        next()
+      } else {
+        // Other pages that do not have permission to access are redirected to the login page.
+        next(`/login?redirect=${to.path}`)
+        this._process?.done()
+      }
+    }
+  })
+
+  router.afterEach((to: Route) => {
+    this._process?.done()
+  })
 }
