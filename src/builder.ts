@@ -16,6 +16,8 @@ export class Builder implements builders.VueBuilder {
   private _app: VueConstructor
   private _process: ui.Process
   private _message: ui.Message
+  // tslint:disable-next-line: variable-name
+  private _message_box: ui.MessageBox
   private _context: Context
   private _title: string
   private _axios: AxiosInstance
@@ -57,6 +59,11 @@ export class Builder implements builders.VueBuilder {
     return this
   }
 
+  public messagebox(util: ui.MessageBox): Builder {
+    this._message_box = util
+    return this
+  }
+
   public app(app: VueConstructor): Builder {
     this._app = app
     return this
@@ -81,7 +88,7 @@ export class Builder implements builders.VueBuilder {
     let router = this._routers
     let store = this._store
 
-    axiosInterceptor(this._axios, store)
+    axiosInterceptor(this._axios, store, this._message, this._message_box)
     routerInterceptor(router, store, this._process, this._message)
 
     let app = new Vue({
@@ -96,7 +103,12 @@ export class Builder implements builders.VueBuilder {
   }
 }
 
-function axiosInterceptor(axios: AxiosInstance, store: Store<IRootState>) {
+function axiosInterceptor(
+  axios: AxiosInstance,
+  store: Store<IRootState>,
+  message: ui.Message,
+  messagebox: ui.MessageBox
+) {
   if (!axios) {
     return
   }
@@ -113,6 +125,60 @@ function axiosInterceptor(axios: AxiosInstance, store: Store<IRootState>) {
     (error) => {
       // tslint:disable-next-line: no-floating-promises
       Promise.reject(error)
+    }
+  )
+
+  axios.interceptors.response.use(
+    (response) => {
+      if (response.status !== 200) {
+        switch (response.status) {
+          case 401:
+            // tslint:disable-next-line: no-floating-promises
+            messagebox
+              ?.confirm(
+                '你已被登出，可以取消继续留在该页面，或者重新登录',
+                '确定登出',
+                // tslint:disable-next-line: ter-indent
+                {
+                  // tslint:disable-next-line: ter-indent
+                  confirmButtonText: '重新登录',
+                  // tslint:disable-next-line: ter-indent
+                  cancelButtonText: '取消',
+                  // tslint:disable-next-line: ter-indent
+                  type: 'warning'
+                  // tslint:disable-next-line: ter-indent
+                }
+              )
+              .then(async () => {
+                await store.dispatch('user/ResetToken')
+                location.reload() // To prevent bugs from vue-router
+              })
+            break
+          case 403:
+            // tslint:disable-next-line: no-floating-promises
+            messagebox?.alert('您的权限不足', '权限不足', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            })
+            break
+        }
+      } else {
+        let res = response.data
+        if (!res.Success) {
+          message?.error(res.Message || 'Error')
+          return Promise.reject(response.data)
+        } else {
+          if (res.Message) {
+            message?.success(res.Message)
+          }
+          return response.data
+        }
+      }
+    },
+    (error) => {
+      message?.error(error.message || 'Error')
+      return Promise.reject(error)
     }
   )
 }
