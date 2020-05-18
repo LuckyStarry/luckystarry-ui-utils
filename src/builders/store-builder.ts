@@ -28,6 +28,10 @@ export class StoreBuilder {
       }
     })
     store.state.context = this.context
+    let token = this.context.token.get()
+    if (token) {
+      store.state.user.token = token
+    }
     return store
   }
 }
