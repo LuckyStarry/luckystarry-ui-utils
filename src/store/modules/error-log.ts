@@ -15,7 +15,7 @@ export interface IErrorLogState {
 export class ErrorLog extends VuexModule implements IErrorLogState {
   public logs: IErrorLog[] = []
 
-  public get Log(): IErrorLog[] {
+  public get Logs(): IErrorLog[] {
     return this.logs || []
   }
 
