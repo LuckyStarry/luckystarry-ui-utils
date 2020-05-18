@@ -12,6 +12,11 @@ export class RouterBuilder {
     return this
   }
 
+  public addDynamicRoutes(routes: RouteConfig[]): RouterBuilder {
+    this.context.routes.dynamic.push(...routes)
+    return this
+  }
+
   public build(): VueRouter {
     return this.context.routes.create()
   }
