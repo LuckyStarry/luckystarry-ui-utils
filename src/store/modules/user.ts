@@ -23,31 +23,31 @@ export class User extends VuexModule<IUserState, IRootState>
   public roles: string[] = []
   public email = ''
 
-  public Token(): string {
+  public get Token(): string {
     return this.token || ''
   }
 
-  public ID(): string {
+  public get ID(): string {
     return this.id || ''
   }
 
-  public Name(): string {
+  public get Name(): string {
     return this.name || ''
   }
 
-  public Avatar(): string {
+  public get Avatar(): string {
     return this.avatar || ''
   }
 
-  public Introduction(): string {
+  public get Introduction(): string {
     return this.introduction || ''
   }
 
-  public Email(): string {
+  public get Email(): string {
     return this.email || ''
   }
 
-  public Roles(): string[] {
+  public get Roles(): string[] {
     return this.roles || []
   }
 
