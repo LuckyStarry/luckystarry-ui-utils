@@ -44,9 +44,12 @@ export class Permission extends VuexModule<IPermissionState, IRootState>
   }
 
   @Mutation
-  private SET_ROUTES(routes: RouteConfig[]) {
-    this.routes = this.context.rootState.context.routes.constants.concat(routes)
-    this.dynamic = routes
+  private SET_ROUTES(payload: {
+    routes: RouteConfig[]
+    constants: RouteConfig[]
+  }) {
+    this.routes = payload.constants.concat(payload.routes)
+    this.dynamic = payload.routes
   }
 
   @Action
@@ -60,6 +63,9 @@ export class Permission extends VuexModule<IPermissionState, IRootState>
         roles
       )
     }
-    this.context.commit('SET_ROUTES', accessedRoutes)
+    this.context.commit('SET_ROUTES', {
+      routes: accessedRoutes,
+      constants: this.context.rootState.context.routes.constants
+    })
   }
 }
